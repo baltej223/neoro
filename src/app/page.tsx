@@ -1,8 +1,11 @@
+"use client";
+
 import Ripple from "@/components/ui/ripple";
 import {Button} from "@/components/ui/button"
 import {Textarea} from "@/components/ui/textarea"
 import { ChevronRight } from "lucide-react"
- 
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { useState } from "react";
 import {
     Menubar,
     MenubarCheckboxItem,
@@ -22,6 +25,7 @@ import {
 
 
 export default function Home() {
+    const [inputValue, setInputValue] = useState('');
     return (
         <>
             <Menubar>
@@ -118,11 +122,38 @@ export default function Home() {
 
             </div>
             <div className="flex flex-row w-full gap-2">
-                <Textarea placeholder="Type your message here." className={"border-4 Main_textarea"}/>
-                <Button variant="outline" size="icon" className="sendButton" style={{marginTop:"15px"}}>
+                    <Textarea
+                    placeholder="Type your message here."
+                    className={"border-4 Main_textarea"}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    />
+                <Button variant="outline" size="icon" className="sendButton" style={{marginTop:"15px"}} onClick={() => askAi(inputValue)}>
                     <ChevronRight />
                 </Button>
             </div>
         </>
     );
+}
+async function askAi(prompt :string){
+const Your_API_Key = "AIzaSyANOLwAhrItMbthvQRY9XE1P9HatdsKVCc";
+const genAI = new GoogleGenerativeAI(Your_API_Key);
+
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-001"});
+
+// const prompt = "Tell me a joke"
+
+const result = await model.generateContent(prompt);
+const response = await result.response;
+const text = response.text();
+console.log(text);
+const utterance = new SpeechSynthesisUtterance(text);
+// Optional: Set properties like language, pitch, rate, volume
+utterance.lang = 'en-US';  // Language
+utterance.pitch = 1;       // Pitch (0-2)
+utterance.rate = 1;        // Speed of speech (0.1-10)
+utterance.volume = 1;      // Volume (0-1)
+
+// Speak the text
+window.speechSynthesis.speak(utterance);
 }

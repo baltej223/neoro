@@ -5,7 +5,7 @@ send_button.addEventListener("click", () => {
     // main_text_area.innerHTML
     // run(main_text_area.innerHTML);
 if((document.querySelector(".Main_textarea").value) != ""){
-    const utterance = new SpeechSynthesisUtterance("Searching for your question...");
+    const utterance = new SpeechSynthesisUtterance("");
     // Optional: Set properties like language, pitch, rate, volume
     utterance.lang = 'en-US';  // Language
     utterance.pitch = 1;       // Pitch (0-2)
